@@ -1,0 +1,164 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>jQuery Wookmark Plug-in Example</title>
+    <meta name="description" content="An very basic example of how to use the Wookmark jQuery plug-in.">
+    <meta name="author" content="Christoph Ono, Sebastian Helzle">
+
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <!-- CSS Reset -->
+    <link rel="stylesheet" href="woodmark/css/reset.css">
+
+    <!-- Global CSS for the page and tiles -->
+    <link rel="stylesheet" href="woodmark/css/main.css">
+
+  </head>
+
+  <body>
+
+    <div id="container">
+      <header>
+        <h1>jQuery Wookmark Plug-in Example</h1>
+        <p>Scroll down to see the infinite scroll effect.</p>
+      </header>
+      <div id="main" role="main">
+
+        <ul id="tiles">
+          <!-- These are our grid blocks -->
+          <!-- End of grid blocks -->
+        </ul>
+
+      </div>
+      <footer>
+        <center>
+          <img id="loading" src="img/loading.GIF"/>
+        </center>
+      </footer>
+    </div>
+
+    <!-- include jQuery -->
+    <script src="woodmark/libs/jquery.min.js"></script>
+
+    <!-- Include the imagesLoaded plug-in -->
+    <script src="woodmark/libs/jquery.imagesloaded.js"></script>
+
+    <!-- Include the plug-in -->
+    <script src="woodmark/jquery.wookmark.js"></script>
+
+    <!-- Once the page is loaded, initalize the plug-in. -->
+    <script type="text/javascript">
+      (function($) {
+        $('#tiles').imagesLoaded(function() {
+          var handler = null;
+
+          // Prepare layout options.
+          var options = {
+            autoResize: true, // This will auto-update the layout when the browser window is resized.
+            container: $('#main'), // Optional, used for some extra CSS styling
+            offset: 20, // Optional, the distance between grid items
+            itemWidth: 210 // Optional, the width of a grid item
+          };
+
+          function applyLayout() {
+            $('#tiles').imagesLoaded(function() {
+              // Destroy the old handler
+              if (handler.wookmarkInstance) {
+                handler.wookmarkInstance.clear();
+              }
+
+              // Create a new layout handler.
+              handler = $('#tiles li');
+              handler.wookmark(options);
+            });
+          }
+
+          var isLoadingMore = false;
+          var canLoadMore = true;
+
+          var loadPerTime = 40;
+          var numLoaded = 0;
+
+          function disableLoading() {
+            canLoadMore = false;
+            $('#loading').hide();
+          }
+
+          function loadMore() {
+            if (!isLoadingMore && canLoadMore) {
+
+              isLoadingMore = true;
+
+              $.getJSON('http://localhost:8080/looksea/api/entity?limit=' + loadPerTime + "&start=" + numLoaded,
+                      function(json) {
+                        var num = 0;
+
+                        if (json.entities.length === 0) {
+                          disableLoading();
+                          return;
+                        }
+
+                        $.each(json.entities, function(key, val) {
+                          num++;
+                          var img = jQuery('<img/>', {
+                            src: val.entity.url,
+                            width: '200'
+                          });
+                          var p = jQuery('<p>');
+                          p.text(val.entity.comment);
+
+                          var li = jQuery('<li>');
+                          img.appendTo(li);
+                          p.appendTo(li);
+
+                          li.appendTo('#tiles');
+
+                          applyLayout();
+                        });
+
+                        numLoaded += json.entities.length;
+                        console.log("Loaded " + numLoaded + " in total");
+
+                        if (json.entities.length !== loadPerTime) {
+
+                          disableLoading();
+                        }
+
+                        isLoadingMore = false;
+                      });
+            }
+          }
+
+          /**
+           * When scrolled all the way to the bottom, add more tiles.
+           */
+          function onScroll(event) {
+            // Check if we're within 100 pixels of the bottom edge of the broser window.
+            var winHeight = window.innerHeight ? window.innerHeight : $(window).height(); // iphone fix
+            var closeToBottom = ($(window).scrollTop() + winHeight > $(document).height() - 100);
+
+            if (closeToBottom) {
+              loadMore();
+            }
+          }
+
+          // Capture scroll event.
+          $(window).bind('scroll', onScroll);
+
+          // Call the layout function.
+          handler = $('#tiles li');
+          handler.wookmark(options);
+
+          loadMore();
+        });
+      })(jQuery);
+    </script>
+
+  </body>
+</html>
