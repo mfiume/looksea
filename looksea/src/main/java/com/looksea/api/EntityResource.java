@@ -65,7 +65,7 @@ public class EntityResource {
                 int id = rs.getInt(1);
                 int user_id = rs.getInt(2);
                 String comment = rs.getString(3);
-                String url = "http://www.looksea.co/resources/media/large/" + rs.getString(4);
+                String url = "resources/media/large/" + rs.getString(4);
 
                 JSONObject jo = new JSONObject();
                 jo.put("id",id);

@@ -7,9 +7,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <title>jQuery Wookmark Plug-in Example</title>
-    <meta name="description" content="An very basic example of how to use the Wookmark jQuery plug-in.">
-    <meta name="author" content="Christoph Ono, Sebastian Helzle">
+    <title>LookSea</title>
+    <meta name="description" content="TODO.">
+    <meta name="author" content="Marc Fiume">
 
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
@@ -19,22 +19,39 @@
     <!-- Global CSS for the page and tiles -->
     <link rel="stylesheet" href="woodmark/css/main.css">
 
+    <link rel="stylesheet" type="text/css" href="css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="css/component.css" />
+    <script src="js/modernizr.custom.js"></script>
   </head>
 
   <body>
 
     <div id="container">
-      <header>
-        <h1>jQuery Wookmark Plug-in Example</h1>
-        <p>Scroll down to see the infinite scroll effect.</p>
+      <header id="ha-header" class="ha-header ha-header-large">
+        <div class="ha-header-perspective">
+          <div class="ha-header-front">
+            <h1><img src="img/looksea-logo.png"/></h1>
+            <!--<h1><span>LOOKSea</span></h1>-->
+          </div>
+          <div class="ha-header-bottom">
+            <nav>
+              <a>Dalliance</a>
+              <a>Inglenook</a>
+              <a>Lagniappe</a>
+              <a>Mellifluous</a>
+              <a>Erstwhile</a>
+              <a>Wafture</a>
+              <a>Serendipity</a>
+              <a>Love</a>
+            </nav>
+          </div>
+        </div>
       </header>
       <div id="main" role="main">
-
         <ul id="tiles">
           <!-- These are our grid blocks -->
           <!-- End of grid blocks -->
         </ul>
-
       </div>
       <footer>
         <center>
@@ -158,6 +175,25 @@
           loadMore();
         });
       })(jQuery);
+    </script>
+
+    <script src="js/waypoints.min.js"></script>
+    <script>
+      var $head = $('#ha-header');
+      $('.ha-waypoint').each(function(i) {
+        var $el = $(this),
+                animClassDown = $el.data('animateDown'),
+                animClassUp = $el.data('animateUp');
+
+        $el.waypoint(function(direction) {
+          if (direction === 'down' && animClassDown) {
+            $head.attr('class', 'ha-header ' + animClassDown);
+          }
+          else if (direction === 'up' && animClassUp) {
+            $head.attr('class', 'ha-header ' + animClassUp);
+          }
+        }, {offset: '100%'});
+      });
     </script>
 
   </body>
