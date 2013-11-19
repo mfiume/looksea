@@ -16,49 +16,68 @@
     <!-- CSS Reset -->
     <link rel="stylesheet" href="woodmark/css/reset.css">
 
-    <!-- Global CSS for the page and tiles -->
+    <!-- Global CSS for plugins -->
     <link rel="stylesheet" href="woodmark/css/main.css">
+    <link rel="stylesheet" type="text/css" href="slide/css/component.css" />
+    <link rel="stylesheet" type="text/css" href="modal/css/component.css" />
 
-    <link rel="stylesheet" type="text/css" href="css/normalize.css" />
-    <link rel="stylesheet" type="text/css" href="css/component.css" />
-    <script src="js/modernizr.custom.js"></script>
+    <script src="slide/js/modernizr.custom.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="css/custom.css" />
   </head>
 
   <body>
 
-    <div id="container">
-      <header id="ha-header" class="ha-header ha-header-large">
-        <div class="ha-header-perspective">
-          <div class="ha-header-front">
-            <h1><img src="img/looksea-logo.png"/></h1>
-            <!--<h1><span>LOOKSea</span></h1>-->
-          </div>
-          <div class="ha-header-bottom">
-            <nav>
-              <a>Dalliance</a>
-              <a>Inglenook</a>
-              <a>Lagniappe</a>
-              <a>Mellifluous</a>
-              <a>Erstwhile</a>
-              <a>Wafture</a>
-              <a>Serendipity</a>
-              <a>Love</a>
-            </nav>
-          </div>
+    <div class="md-modal md-effect-16" id="modal-12">
+      <div class="md-content">
+        <h3>Modal Dialog</h3>
+        <div>
+          <p>This is a modal window. You can do the following things with it:</p>
+          <img id="modal-image" style="width:400; max-width: 400; max-height: 400"/>
+          <button class="md-close">Close me!</button>
         </div>
-      </header>
-      <div id="main" role="main">
-        <ul id="tiles">
-          <!-- These are our grid blocks -->
-          <!-- End of grid blocks -->
-        </ul>
       </div>
-      <footer>
-        <center>
-          <img id="loading" src="img/loading.GIF"/>
-        </center>
-      </footer>
     </div>
+
+    <div id="st-container" class="st-container">
+      <!-- content push wrapper -->
+      <div class="st-pusher">
+        <nav class="st-menu st-effect-3" id="menu-3">
+          <h2 class="icon icon-lab"><img src="img/looksea-white.png"/></h2>
+          <ul>
+            <li><a class="icon icon-data" href="#">Trending</a></li>
+            <li><a class="icon icon-data" href="#">Wardrobe</a></li>
+            <li><a class="icon icon-location" href="#">Retailers</a></li>
+            <li><a class="icon icon-study" href="#">Stylists</a></li>
+          </ul>
+        </nav>
+        <div class="st-content"><!-- this is the wrapper for the content -->
+          <div class="st-content-inner"><!-- extra div for emulating position:fixed of the menu -->
+            <!-- Top Navigation -->
+            <div class="main">
+              <div id="st-trigger-effects">
+                <button data-effect="st-effect-3">blah</button>
+                <button id="modal-button" class="md-trigger" data-modal="modal-12" style="display:none"></button>
+                <div id="main" role="main" style="max-width:900px; margin:0 auto;">
+                  <ul id="tiles">
+                    <!-- These are our grid blocks -->
+                    <!-- End of grid blocks -->
+                  </ul>
+                </div>
+                <footer>
+                  <center>
+                    <img id="loading" width="20" src="img/loader2.gif"/>
+                  </center>
+                </footer>
+              </div>
+            </div><!-- /main -->
+          </div><!-- /st-content-inner -->
+        </div><!-- /st-content -->
+      </div><!-- /st-pusher -->
+    </div><!-- /st-container -->
+    <!--<div class="md-overlay"></div><!-- the overlay element -->
+
 
     <!-- include jQuery -->
     <script src="woodmark/libs/jquery.min.js"></script>
@@ -127,12 +146,33 @@
                             src: val.entity.url,
                             width: '200'
                           });
-                          var p = jQuery('<p>');
-                          p.text(val.entity.comment);
+
+                          $(function() {
+                            img.click(function() {
+                              $("#modal-image").prop('src', val.entity.url);
+                              $("#modal-button" ).trigger( "click" );
+                            });
+                          });
 
                           var li = jQuery('<li>');
                           img.appendTo(li);
-                          p.appendTo(li);
+
+                          /*
+                           var username = val.entity.username;
+                           if (username !== '') {
+                           var p = jQuery('<p/>', {
+                           style: 'color: rgb(80,80,80); font-weight: bold; font-size: 11px;'
+                           });
+                           p.text(username);
+                           p.appendTo(li);
+                           }*/
+
+                          var tagstring = val.entity.tagstring;
+                          if (tagstring !== '') {
+                            var p = jQuery('<p/>');
+                            p.text(tagstring);
+                            p.appendTo(li);
+                          }
 
                           li.appendTo('#tiles');
 
@@ -176,25 +216,15 @@
         });
       })(jQuery);
     </script>
+    <script src="slide/js/classie.js"></script>
+    <script src="slide/js/sidebarEffects.js"></script>
 
-    <script src="js/waypoints.min.js"></script>
+    <script src="modal/js/modalEffects.js"></script>
     <script>
-      var $head = $('#ha-header');
-      $('.ha-waypoint').each(function(i) {
-        var $el = $(this),
-                animClassDown = $el.data('animateDown'),
-                animClassUp = $el.data('animateUp');
-
-        $el.waypoint(function(direction) {
-          if (direction === 'down' && animClassDown) {
-            $head.attr('class', 'ha-header ' + animClassDown);
-          }
-          else if (direction === 'up' && animClassUp) {
-            $head.attr('class', 'ha-header ' + animClassUp);
-          }
-        }, {offset: '100%'});
-      });
+      // this is important for IEs
+      var polyfilter_scriptpath = '/modal/js/';
     </script>
-
+    <script src="modal/js/cssParser.js"></script>
+    <script src="modal/js/css-filters-polyfill.js"></script>
   </body>
 </html>

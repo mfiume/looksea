@@ -53,7 +53,7 @@ public class EntityResource {
 
             String query = "SELECT * FROM entity";
             if (doLimit && doStart) {
-                query = String.format("SELECT * FROM entity LIMIT %d,%d", start, limit);
+                query = String.format("SELECT * FROM entity_view_normalized LIMIT %d,%d", start, limit);
             }
 
             Connection c = DBConnection.getConnection();
@@ -62,16 +62,19 @@ public class EntityResource {
 
             JSONArray enitities = new JSONArray();
             while (rs.next()) {
-                int id = rs.getInt(1);
-                int user_id = rs.getInt(2);
-                String comment = rs.getString(3);
-                String url = "resources/media/large/" + rs.getString(4);
+                int entity_id = rs.getInt(1);
+                String url = "resources/media/large/" + rs.getString(2);
+                String username = rs.getString(3);
+                String comment = rs.getString(4);
+                String tagstring = rs.getString(5);
+                if (rs.wasNull()) { tagstring = ""; }
 
                 JSONObject jo = new JSONObject();
-                jo.put("id",id);
-                jo.put("user_id",user_id);
+                jo.put("entity_id",entity_id);
+                jo.put("username",username);
                 jo.put("comment",comment);
                 jo.put("url", url);
+                jo.put("tagstring",tagstring);
 
                 JSONObject entity = new JSONObject();
                 entity.put("entity",jo);

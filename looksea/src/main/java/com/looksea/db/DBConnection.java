@@ -24,7 +24,7 @@ public class DBConnection {
         return con;
     }
 
-    public static void setupConnectionPool() {
+    private static void setupConnectionPool() {
 
         PoolProperties p = new PoolProperties();
         p.setUrl("jdbc:mysql://" + host + ":3306/" + dbName);
