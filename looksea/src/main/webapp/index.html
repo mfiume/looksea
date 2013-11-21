@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <title>LookSea</title>
+    <title>coutr</title>
     <meta name="description" content="TODO.">
     <meta name="author" content="Marc Fiume">
 
@@ -18,65 +18,35 @@
 
     <!-- Global CSS for plugins -->
     <link rel="stylesheet" href="woodmark/css/main.css">
-    <link rel="stylesheet" type="text/css" href="slide/css/component.css" />
-    <link rel="stylesheet" type="text/css" href="modal/css/component.css" />
-
-    <script src="slide/js/modernizr.custom.js"></script>
 
     <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" href="css/custom.css" />
   </head>
 
   <body>
+    <header>
+      <!--<center><img src="img/looksea-logo-small_1.png" style="margin-bottom:10px"/></center>-->
+      <form class="search" method="post" action="index.html" >
+        <input id="search-field" type="text" name="q" placeholder="Search..." autocomplete="off"/>
+        <ul id="search-suggestions" class="results" >
+        </ul>
+      </form>
 
-    <div class="md-modal md-effect-16" id="modal-12">
-      <div class="md-content">
-        <h3>Modal Dialog</h3>
-        <div>
-          <p>This is a modal window. You can do the following things with it:</p>
-          <img id="modal-image" style="width:400; max-width: 400; max-height: 400"/>
-          <button class="md-close">Close me!</button>
-        </div>
+    </header>
+    <div>
+      <div id="main" role="main" style="max-width:900px; margin-left: auto; margin-right: auto; /*margin-top:30px*/">
+        <ul id="tiles">
+          <!-- These are our grid blocks -->
+          <!-- End of grid blocks -->
+        </ul>
       </div>
+      <footer>
+        <center>
+          <img id="loading" width="20" src="img/loader2.gif"/>
+        </center>
+      </footer>
     </div>
-
-    <div id="st-container" class="st-container">
-      <!-- content push wrapper -->
-      <div class="st-pusher">
-        <nav class="st-menu st-effect-3" id="menu-3">
-          <h2 class="icon icon-lab"><img src="img/looksea-white.png"/></h2>
-          <ul>
-            <li><a class="icon icon-data" href="#">Trending</a></li>
-            <li><a class="icon icon-data" href="#">Wardrobe</a></li>
-            <li><a class="icon icon-location" href="#">Retailers</a></li>
-            <li><a class="icon icon-study" href="#">Stylists</a></li>
-          </ul>
-        </nav>
-        <div class="st-content"><!-- this is the wrapper for the content -->
-          <div class="st-content-inner"><!-- extra div for emulating position:fixed of the menu -->
-            <!-- Top Navigation -->
-            <div class="main">
-              <div id="st-trigger-effects">
-                <button data-effect="st-effect-3">blah</button>
-                <button id="modal-button" class="md-trigger" data-modal="modal-12" style="display:none"></button>
-                <div id="main" role="main" style="max-width:900px; margin:0 auto;">
-                  <ul id="tiles">
-                    <!-- These are our grid blocks -->
-                    <!-- End of grid blocks -->
-                  </ul>
-                </div>
-                <footer>
-                  <center>
-                    <img id="loading" width="20" src="img/loader2.gif"/>
-                  </center>
-                </footer>
-              </div>
-            </div><!-- /main -->
-          </div><!-- /st-content-inner -->
-        </div><!-- /st-content -->
-      </div><!-- /st-pusher -->
-    </div><!-- /st-container -->
-    <!--<div class="md-overlay"></div><!-- the overlay element -->
+    <div class="md-overlay"></div><!-- the overlay element -->
 
 
     <!-- include jQuery -->
@@ -93,7 +63,6 @@
       (function($) {
         $('#tiles').imagesLoaded(function() {
           var handler = null;
-
           // Prepare layout options.
           var options = {
             autoResize: true, // This will auto-update the layout when the browser window is resized.
@@ -101,7 +70,6 @@
             offset: 20, // Optional, the distance between grid items
             itemWidth: 210 // Optional, the width of a grid item
           };
-
           function applyLayout() {
             $('#tiles').imagesLoaded(function() {
               // Destroy the old handler
@@ -115,12 +83,29 @@
             });
           }
 
+          function gup(name) {
+            name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+            var regexS = "[\\?&]" + name + "=([^&#]*)";
+            var regex = new RegExp(regexS);
+            var results = regex.exec(window.location.href);
+            if (results == null)
+              return "";
+            else
+              return results[1];
+          }
+
+          var searchTerm = gup('search');
+
+          if (searchTerm === null || searchTerm === "") {
+            $('#search-field').val("");
+          } else {
+            $('#search-field').val("#" + searchTerm);
+          }
+
           var isLoadingMore = false;
           var canLoadMore = true;
-
           var loadPerTime = 40;
           var numLoaded = 0;
-
           function disableLoading() {
             canLoadMore = false;
             $('#loading').hide();
@@ -129,12 +114,17 @@
           function loadMore() {
             if (!isLoadingMore && canLoadMore) {
 
-              isLoadingMore = true;
+              var searchUrl = 'http://localhost:8080/looksea/api/entity?limit=' + loadPerTime + "&start=" + numLoaded;
+              if (searchTerm !== null && searchTerm !== "") {
+                searchUrl += '&tag=' + searchTerm;
+              }
 
-              $.getJSON('http://localhost:8080/looksea/api/entity?limit=' + loadPerTime + "&start=" + numLoaded,
+              console.log(searchUrl);
+
+              isLoadingMore = true;
+              $.getJSON(searchUrl,
                       function(json) {
                         var num = 0;
-
                         if (json.entities.length === 0) {
                           disableLoading();
                           return;
@@ -146,42 +136,38 @@
                             src: val.entity.url,
                             width: '200'
                           });
-
                           $(function() {
                             img.click(function() {
+                              alert("showing modal");
                               $("#modal-image").prop('src', val.entity.url);
-                              $("#modal-button" ).trigger( "click" );
+                              $("#modal-button").trigger("click");
                             });
                           });
-
                           var li = jQuery('<li>');
                           img.appendTo(li);
 
-                          /*
-                           var username = val.entity.username;
-                           if (username !== '') {
-                           var p = jQuery('<p/>', {
-                           style: 'color: rgb(80,80,80); font-weight: bold; font-size: 11px;'
-                           });
-                           p.text(username);
-                           p.appendTo(li);
-                           }*/
-
                           var tagstring = val.entity.tagstring;
                           if (tagstring !== '') {
+
+                            var tags = tagstring.split(" ");
                             var p = jQuery('<p/>');
-                            p.text(tagstring);
+                            tags.forEach(function(tag) {
+                              var a = jQuery('<a/>', {
+                                class: 'tag',
+                                href: 'index.html?search=' + tag
+                              });
+                              a.text('#' + tag);
+                              a.appendTo(p);
+                              //jQuery('<br/>').appendTo(p);
+                            });
                             p.appendTo(li);
                           }
 
                           li.appendTo('#tiles');
-
                           applyLayout();
                         });
-
                         numLoaded += json.entities.length;
                         console.log("Loaded " + numLoaded + " in total");
-
                         if (json.entities.length !== loadPerTime) {
 
                           disableLoading();
@@ -199,7 +185,6 @@
             // Check if we're within 100 pixels of the bottom edge of the broser window.
             var winHeight = window.innerHeight ? window.innerHeight : $(window).height(); // iphone fix
             var closeToBottom = ($(window).scrollTop() + winHeight > $(document).height() - 100);
-
             if (closeToBottom) {
               loadMore();
             }
@@ -207,24 +192,61 @@
 
           // Capture scroll event.
           $(window).bind('scroll', onScroll);
-
           // Call the layout function.
           handler = $('#tiles li');
           handler.wookmark(options);
-
           loadMore();
         });
-      })(jQuery);
-    </script>
-    <script src="slide/js/classie.js"></script>
-    <script src="slide/js/sidebarEffects.js"></script>
-
-    <script src="modal/js/modalEffects.js"></script>
+      })(jQuery);</script>
     <script>
-      // this is important for IEs
-      var polyfilter_scriptpath = '/modal/js/';
+
+      function getSuggestionsForSearchTerm(searchTerm) {
+        var results = [];
+
+        $.ajax({
+          dataType: "json",
+          url: 'http://localhost:8080/looksea/api/tag',
+          data: 'match=fuzzy&search=' + searchTerm,
+          success: function(json) {
+            $.each(json.tags, function(key, val) {
+              var tagname = val.tag.name;
+              results.push(tagname);
+            });
+          },
+          async: false
+        });
+
+        return results;
+      }
+
+      $("#search-field").keyup(function() {
+        var searchterm = $("#search-field").val();
+        var tags = getSuggestionsForSearchTerm(searchterm);
+
+        $('#search-suggestions').empty();
+
+        $.each(tags, function(index, tag) {
+
+          //<li><a href="index.html">Search Result #1<br /><span>Description...</span></a></li>
+          var li = jQuery('<li/>');
+          var a = jQuery('<a/>', {
+            style: "cursor: pointer; cursor: hand;",
+            href: "index.html?search=" + tag
+          });
+          a.text('#' + tag);
+
+          var id = 'suggestion-' + index;
+          a.prop("id", id);
+
+          a.click(function() {
+            console.log("changed to " + tag);
+          });
+
+          a.appendTo(li);
+          li.appendTo('#search-suggestions');
+        });
+
+      });
     </script>
-    <script src="modal/js/cssParser.js"></script>
-    <script src="modal/js/css-filters-polyfill.js"></script>
   </body>
 </html>

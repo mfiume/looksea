@@ -51,9 +51,23 @@ public class EntityResource {
                 limit = Integer.parseInt(queryParams.getFirst("limit"));
             }
 
-            String query = "SELECT * FROM entity";
+            String tag = null;
+            if (queryParams.containsKey("tag")) {
+                tag = queryParams.getFirst("tag");
+            }
+
+            String query = "SELECT * FROM entity_view_normalized";
+
+            // need to match on tag id
+            if (tag != null) {
+                query = String.format("SELECT entity.entity_id,entity.user_id AS username,entity.user_comment,entity.url,entity.tagstring FROM entity \n"
+                        + "LEFT JOIN entity_tags\n"
+                        + "ON entity.entity_id = entity_tags.`entity_id`\n"
+                        + "WHERE entity_tags.`tag_id` IN (SELECT tag.`tag_id` FROM tag WHERE tag.name = '%s') GROUP BY entity.entity_id", tag);
+            }
+
             if (doLimit && doStart) {
-                query = String.format("SELECT * FROM entity_view_normalized LIMIT %d,%d", start, limit);
+                query = String.format("%s LIMIT %d,%d", query, start, limit);
             }
 
             Connection c = DBConnection.getConnection();
@@ -62,22 +76,24 @@ public class EntityResource {
 
             JSONArray enitities = new JSONArray();
             while (rs.next()) {
-                int entity_id = rs.getInt(1);
-                String url = "resources/media/large/" + rs.getString(2);
-                String username = rs.getString(3);
-                String comment = rs.getString(4);
-                String tagstring = rs.getString(5);
-                if (rs.wasNull()) { tagstring = ""; }
+                int entity_id = rs.getInt("entity_id");
+                String url = "resources/media/large/" + rs.getString("url");
+                String username = rs.getString("username");
+                String comment = rs.getString("user_comment");
+                String tagstring = rs.getString("tagstring");
+                if (rs.wasNull()) {
+                    tagstring = "";
+                }
 
                 JSONObject jo = new JSONObject();
-                jo.put("entity_id",entity_id);
-                jo.put("username",username);
-                jo.put("comment",comment);
+                jo.put("entity_id", entity_id);
+                jo.put("username", username);
+                jo.put("comment", comment);
                 jo.put("url", url);
-                jo.put("tagstring",tagstring);
+                jo.put("tagstring", tagstring);
 
                 JSONObject entity = new JSONObject();
-                entity.put("entity",jo);
+                entity.put("entity", jo);
 
                 enitities.add(entity);
             }
@@ -92,12 +108,5 @@ public class EntityResource {
         } catch (Exception ex) {
             return "Damn " + (count++) + " " + ex.getLocalizedMessage();
         }
-
     }
-
-    /*@GET
-    public String get(@Context UriInfo uriInfo) {
-        String query = uriInfo.getRequestUri().getQuery();
-        return "Query is " + query;
-    }*/
 }

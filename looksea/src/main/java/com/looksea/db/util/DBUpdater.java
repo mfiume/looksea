@@ -34,7 +34,7 @@ public class DBUpdater {
         } else {
             s3.executeUpdate("UPDATE entity SET tagstring = '" + tagsForEntity + "' WHERE entity_id = " + entity_id);
         }
-        c.close();
+        try { c.close(); } catch (Exception e) {}
     }
 
     private static void updateTagStringsForAllEntities() throws Exception {
