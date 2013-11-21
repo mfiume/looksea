@@ -88,7 +88,7 @@
             var regexS = "[\\?&]" + name + "=([^&#]*)";
             var regex = new RegExp(regexS);
             var results = regex.exec(window.location.href);
-            if (results == null)
+            if (results === null)
               return "";
             else
               return results[1];
@@ -136,6 +136,8 @@
                             src: val.entity.url,
                             width: '200'
                           });
+                          img.css("cursor","pointer");
+                          img.css("border-radius","5px");
                           $(function() {
                             img.click(function() {
                               alert("showing modal");
@@ -157,7 +159,7 @@
                                 href: 'index.html?search=' + tag
                               });
                               a.text('#' + tag);
-                              a.appendTo(p);
+                              //a.appendTo(p);
                               //jQuery('<br/>').appendTo(p);
                             });
                             p.appendTo(li);
@@ -227,7 +229,11 @@
 
         $.each(tags, function(index, tag) {
 
-          //<li><a href="index.html">Search Result #1<br /><span>Description...</span></a></li>
+          // don't show too many results
+          if (index >= 15) {
+            return;
+          }
+
           var li = jQuery('<li/>');
           var a = jQuery('<a/>', {
             style: "cursor: pointer; cursor: hand;",
