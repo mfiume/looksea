@@ -10,29 +10,26 @@ body {
 
 
 /** TAGGING **/
-.tag {
-    font-family: 'Helvetica Neue';
-    /*background-color:rgb(100,100,100);*/
-    color:gray;
-    padding: 3px;
-    /*border-radius: 5px;*/
-    margin-right:2px;
-    border-width: 1px;
-    border-style: solid;
-    border-color: #cbcfe2 #c8cee7 #c4c7d7;
-    border-radius: 3px;
-    background-color: #fdfdfd;
+a {
+    border: none;
+    padding: 0.6em 1.2em;
+    background: #c0392b;
+    color: #fff;
+    font-family: 'Lato', Calibri, Arial, sans-serif;
+    font-size: 1em;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: inline-block;
+    margin: 3px 2px;
+    border-radius: 2px;
 }
 
-.tag:visited {color:gray;}  /* visited link */
+.tag:visited {color:white;}  /* visited link */
 .tag:hover {
     color:white;
-    /*background-color:red;*/
     text-decoration: none;
-    color: #fff;
-    text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
-    border-color: #2380dd #2179d5 #1a60aa;
-    background-color: #338cdf;
+    background-color: rgb(176,35,24);
 }  /* mouse over link */
 
 
@@ -171,3 +168,8 @@ input {
 }
 
 .lt-ie9 .search input { line-height: 26px }
+
+/**BUTTONS**/
+.close-button {
+    cursor: pointer;
+}

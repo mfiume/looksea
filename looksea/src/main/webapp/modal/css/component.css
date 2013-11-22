@@ -27,7 +27,7 @@ perspective effects (not including the modals and the overlay).
 	position: fixed;
 	top: 50%;
 	left: 50%;
-	width: 50%;
+	/*width: 50%;*/
 	max-width: 630px;
 	min-width: 320px;
 	height: auto;
@@ -55,7 +55,7 @@ perspective effects (not including the modals and the overlay).
 	left: 0;
 	z-index: 1000;
 	opacity: 0;
-	background: rgba(143,27,15,0.6);
+        background: rgba(0,0,0,0.70);
 	-webkit-transition: all 0.3s;
 	-moz-transition: all 0.3s;
 	transition: all 0.3s;
@@ -70,7 +70,7 @@ perspective effects (not including the modals and the overlay).
 .md-content {
 	color: #fff;
 	/*background: #e74c3c;*/
-        background: rgb(240,240,240);
+        /*background: rgb(240,240,240);*/
 	position: relative;
 	border-radius: 3px;
 	margin: 0 auto;

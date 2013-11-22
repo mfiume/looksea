@@ -16,6 +16,8 @@
     <!-- CSS Reset -->
     <link rel="stylesheet" href="woodmark/css/reset.css">
 
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+
     <!-- Global CSS for plugins -->
     <link rel="stylesheet" href="woodmark/css/main.css">
 
@@ -32,8 +34,10 @@
     <div class="md-modal md-effect-1" id="modal-1">
       <div class="md-content">
         <div>
-          <img id="modal-image" style="max-height:400px;max-width:500px;"/>
-          <button class="md-close">x</button>
+          <div style="margin-bottom:5px">
+            <div class="md-close pull-right close-button"><img src="img/close.png"/></div>
+          </div><br/>
+          <center><img id="modal-image" style="max-height:60%;max-width:500px;margin-bottom:10px"/></center>
           <div id="modal-tags"></div>
         </div>
       </div>
@@ -42,16 +46,13 @@
     <header>
       <img style="position:absolute" src="img/coutr-bold-small.png"/>
       <form class="search" method="post" action="index.html" >
-
-
         <input id="search-field" type="text" name="q" placeholder="Search..." autocomplete="off"/>
         <ul id="search-suggestions" class="results" >
         </ul>
       </form>
-
     </header>
     <div>
-      <div id="main" role="main" style="max-width:900px; margin-left: auto; margin-right: auto; /*margin-top:30px*/">
+      <div id="main" role="main" style="max-width:900px; margin-left: auto; margin-right: auto;">
         <ul id="tiles">
           <!-- These are our grid blocks -->
           <!-- End of grid blocks -->
@@ -64,7 +65,6 @@
       </footer>
     </div>
     <div class="md-overlay"></div><!-- the overlay element -->
-
 
     <!-- include jQuery -->
     <script src="woodmark/libs/jquery.min.js"></script>
