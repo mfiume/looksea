@@ -30,7 +30,7 @@
   </head>
 
   <body>
-    <button id="modal-button" class="md-trigger" data-modal="modal-1" style="display:none">Sticky Up</button>
+    <button id="modal-button" class="md-trigger" data-modal="modal-1" style="display:none"></button>
     <div class="md-modal md-effect-1" id="modal-1">
       <div class="md-content">
         <div>
@@ -44,15 +44,22 @@
     </div>
 
     <header>
-      <img style="position:absolute" src="img/coutr-bold-small.png"/>
-      <form class="search" method="post" action="index.html" >
-        <input id="search-field" type="text" name="q" placeholder="Search..." autocomplete="off"/>
-        <ul id="search-suggestions" class="results" >
-        </ul>
-      </form>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4"><img style="position:absolute" src="img/coutr-refined-2.png"/></div>
+          <div class="col-md-4">
+            <form class="search" method="post" action="index.html" >
+              <input id="search-field" type="text" name="q" placeholder="Search..." autocomplete="off"/>
+              <ul id="search-suggestions" class="results" >
+              </ul>
+            </form>
+          </div>
+        </div>
+      </div>
     </header>
+
     <div>
-      <div id="main" role="main" style="max-width:900px; margin-left: auto; margin-right: auto;">
+      <div id="main" role="main" style="padding-top:40px; max-width:900px; margin-left: auto; margin-right: auto;">
         <ul id="tiles">
           <!-- These are our grid blocks -->
           <!-- End of grid blocks -->
@@ -63,6 +70,11 @@
           <img id="loading" width="20" src="img/loader2.gif"/>
         </center>
       </footer>
+    </div>
+    <div class="container">
+      <div class="row" style="position:fixed; top:50px;">
+        <div id="hashtag" class="col-md-12" style="background:rgba(192,55,49,0.9);font-size:50px; font-weight:800; color:rgb(192,55,49); color:white; padding:5px 5px 10px 5px; border-radius: 5px; line-height: 0.85em;"></div>
+      </div>
     </div>
     <div class="md-overlay"></div><!-- the overlay element -->
 
@@ -120,9 +132,11 @@
           var searchTerm = gup('search');
 
           if (searchTerm === null || searchTerm === "") {
-            $('#search-field').val("");
+            //$('#search-field').val("");
+            $('#hashtag').text('#trending');
           } else {
-            $('#search-field').val("#" + searchTerm);
+            //$('#search-field').val("#" + searchTerm);
+            $('#hashtag').text("#" + searchTerm);
           }
 
           var isLoadingMore = false;

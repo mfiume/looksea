@@ -4,10 +4,9 @@ a {
     text-decoration: none;
 }
 
-body {
-    margin-top:50px;
+html {
+    background-color: white;
 }
-
 
 /** TAGGING **/
 a {
