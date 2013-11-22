@@ -9,7 +9,7 @@ html {
 }
 
 /** TAGGING **/
-a {
+.tag {
     border: none;
     padding: 0.6em 1.2em;
     background: #c0392b;
