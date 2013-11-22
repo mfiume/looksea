@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <title>coutr</title>
+    <title>COUTR</title>
     <meta name="description" content="TODO.">
     <meta name="author" content="Marc Fiume">
 
@@ -21,12 +21,29 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" href="css/custom.css" />
+
+    <link rel="stylesheet" type="text/css" href="modal/css/default.css" />
+    <link rel="stylesheet" type="text/css" href="modal/css/component.css" />
+    <script src="modal/js/modernizr.custom.js"></script>
   </head>
 
   <body>
+    <button id="modal-button" class="md-trigger" data-modal="modal-1" style="display:none">Sticky Up</button>
+    <div class="md-modal md-effect-1" id="modal-1">
+      <div class="md-content">
+        <div>
+          <img id="modal-image" style="max-height:400px;max-width:500px;"/>
+          <button class="md-close">x</button>
+          <div id="modal-tags"></div>
+        </div>
+      </div>
+    </div>
+
     <header>
-      <!--<center><img src="img/looksea-logo-small_1.png" style="margin-bottom:10px"/></center>-->
+      <img style="position:absolute" src="img/coutr-bold-small.png"/>
       <form class="search" method="post" action="index.html" >
+
+
         <input id="search-field" type="text" name="q" placeholder="Search..." autocomplete="off"/>
         <ul id="search-suggestions" class="results" >
         </ul>
@@ -60,6 +77,12 @@
 
     <!-- Once the page is loaded, initalize the plug-in. -->
     <script type="text/javascript">
+
+      var root = window.location.href;
+      var n = root.lastIndexOf("/");
+      root = root.substring(0, n);
+      console.log(root);
+
       (function($) {
         $('#tiles').imagesLoaded(function() {
           var handler = null;
@@ -114,7 +137,7 @@
           function loadMore() {
             if (!isLoadingMore && canLoadMore) {
 
-              var searchUrl = 'http://localhost:8080/looksea/api/entity?limit=' + loadPerTime + "&start=" + numLoaded;
+              var searchUrl = root + '/api/entity?limit=' + loadPerTime + "&start=" + numLoaded;
               if (searchTerm !== null && searchTerm !== "") {
                 searchUrl += '&tag=' + searchTerm;
               }
@@ -136,13 +159,36 @@
                             src: val.entity.url,
                             width: '200'
                           });
-                          img.css("cursor","pointer");
-                          img.css("border-radius","5px");
+                          img.css("cursor", "pointer");
+                          img.css("border-radius", "5px");
+                          //class="md-trigger" data-modal="modal-7"
+
                           $(function() {
                             img.click(function() {
-                              alert("showing modal");
+                              //alert("showing modal");
+
                               $("#modal-image").prop('src', val.entity.url);
                               $("#modal-button").trigger("click");
+
+                              $("#modal-tags").empty();
+
+                              var tagstring = val.entity.tagstring;
+                              if (tagstring !== '') {
+
+                                var tags = tagstring.split(" ");
+                                var p = jQuery('<p/>');
+                                tags.forEach(function(tag) {
+                                  var a = jQuery('<a/>', {
+                                    class: 'tag',
+                                    href: 'index.html?search=' + tag
+                                  });
+                                  a.text('#' + tag);
+                                  a.appendTo("#modal-tags");
+                                  //jQuery('<br/>').appendTo(p);
+                                });
+                                p.appendTo(li);
+                              }
+
                             });
                           });
                           var li = jQuery('<li>');
@@ -207,7 +253,7 @@
 
         $.ajax({
           dataType: "json",
-          url: 'http://localhost:8080/looksea/api/tag',
+          url: root + '/api/tag',
           data: 'match=fuzzy&search=' + searchTerm,
           success: function(json) {
             $.each(json.tags, function(key, val) {
@@ -254,5 +300,20 @@
 
       });
     </script>
+
+    <div class="md-overlay"></div><!-- the overlay element -->
+
+    <!-- classie.js by @desandro: https://github.com/desandro/classie -->
+    <script src="modal/js/classie.js"></script>
+    <script src="modal/js/modalEffects.js"></script>
+
+    <!-- for the blur effect -->
+    <!-- by @derSchepp https://github.com/Schepp/CSS-Filters-Polyfill -->
+    <script>
+      // this is important for IEs
+      var polyfilter_scriptpath = '/js/';
+    </script>
+    <script src="modal/js/cssParser.js"></script>
+    <script src="modal/js/css-filters-polyfill.js"></script>
   </body>
 </html>

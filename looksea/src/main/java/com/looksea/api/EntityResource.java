@@ -77,7 +77,7 @@ public class EntityResource {
             JSONArray enitities = new JSONArray();
             while (rs.next()) {
                 int entity_id = rs.getInt("entity_id");
-                String url = "resources/media/large/" + rs.getString("url");
+                String url = rs.getString("url");
                 String username = rs.getString("username");
                 String comment = rs.getString("user_comment");
                 String tagstring = rs.getString("tagstring");
