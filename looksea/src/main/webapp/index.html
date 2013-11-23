@@ -14,19 +14,23 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
     <!-- CSS Reset -->
-    <link rel="stylesheet" href="woodmark/css/reset.css">
+    <link rel="stylesheet" href="ext/woodmark/css/reset.css">
 
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 
     <!-- Global CSS for plugins -->
-    <link rel="stylesheet" href="woodmark/css/main.css">
+    <link rel="stylesheet" href="ext/woodmark/css/main.css">
+
+    <!-- Search -->
+    <link rel="stylesheet" href="ext/search/css/style.css">
+    <!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 
     <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" href="css/custom.css" />
 
-    <link rel="stylesheet" type="text/css" href="modal/css/default.css" />
-    <link rel="stylesheet" type="text/css" href="modal/css/component.css" />
-    <script src="modal/js/modernizr.custom.js"></script>
+    <link rel="stylesheet" type="text/css" href="ext/modal/css/default.css" />
+    <link rel="stylesheet" type="text/css" href="ext/modal/css/component.css" />
+    <script src="ext/modal/js/modernizr.custom.js"></script>
   </head>
 
   <body>
@@ -47,12 +51,14 @@
       <div class="container">
         <div class="row">
           <div class="col-md-4"><a href="index.html"><img style="position:absolute" src="img/coutr-refined-2.png"/></a></div>
+          <div class="col-md-4"></div>
           <div class="col-md-4">
-            <form class="search" method="post" action="index.html" >
-              <input id="search-field" type="text" name="q" placeholder="Search..." autocomplete="off"/>
-              <ul id="search-suggestions" class="results" >
+            <div class="search">
+              <input id="search-field" type="text" name="q" placeholder="" autocomplete="off"/>
+              <ul id="search-suggestions" class="search-ac" >
+                <li><a href="">search by tag</a></li>
               </ul>
-            </form>
+            </div>
           </div>
         </div>
       </div>
@@ -79,13 +85,13 @@
     <div class="md-overlay"></div><!-- the overlay element -->
 
     <!-- include jQuery -->
-    <script src="woodmark/libs/jquery.min.js"></script>
+    <script src="ext/woodmark/libs/jquery.min.js"></script>
 
     <!-- Include the imagesLoaded plug-in -->
-    <script src="woodmark/libs/jquery.imagesloaded.js"></script>
+    <script src="ext/woodmark/libs/jquery.imagesloaded.js"></script>
 
     <!-- Include the plug-in -->
-    <script src="woodmark/jquery.wookmark.js"></script>
+    <script src="ext/woodmark/jquery.wookmark.js"></script>
 
     <!-- Once the page is loaded, initalize the plug-in. -->
     <script type="text/javascript">
@@ -287,6 +293,20 @@
 
         $('#search-suggestions').empty();
 
+        if (searchterm === '') {
+          var li = jQuery('<li/>');
+          var a = jQuery('<a/>', {
+            href: ""
+          });
+          a.text('search by tag');
+
+          a.appendTo(li);
+          li.appendTo('#search-suggestions');
+          return;
+        }
+
+        var numAdded = 0;
+
         $.each(tags, function(index, tag) {
 
           // don't show too many results
@@ -296,17 +316,9 @@
 
           var li = jQuery('<li/>');
           var a = jQuery('<a/>', {
-            style: "cursor: pointer;",
             href: "index.html?search=" + tag
           });
           a.text('#' + tag);
-
-          var id = 'suggestion-' + index;
-          a.prop("id", id);
-
-          a.click(function() {
-            console.log("changed to " + tag);
-          });
 
           a.appendTo(li);
           li.appendTo('#search-suggestions');
@@ -318,8 +330,8 @@
     <div class="md-overlay"></div><!-- the overlay element -->
 
     <!-- classie.js by @desandro: https://github.com/desandro/classie -->
-    <script src="modal/js/classie.js"></script>
-    <script src="modal/js/modalEffects.js"></script>
+    <script src="ext/modal/js/classie.js"></script>
+    <script src="ext/modal/js/modalEffects.js"></script>
 
     <!-- for the blur effect -->
     <!-- by @derSchepp https://github.com/Schepp/CSS-Filters-Polyfill -->
@@ -327,7 +339,7 @@
       // this is important for IEs
       var polyfilter_scriptpath = '/js/';
     </script>
-    <script src="modal/js/cssParser.js"></script>
-    <script src="modal/js/css-filters-polyfill.js"></script>
+    <script src="ext/modal/js/cssParser.js"></script>
+    <script src="ext/modal/js/css-filters-polyfill.js"></script>
   </body>
 </html>
